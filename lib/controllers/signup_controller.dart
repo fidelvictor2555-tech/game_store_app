@@ -32,7 +32,7 @@ class signup_controller extends GetxController {
     }
 
     try {
-      var url = Uri.parse("http://10.0.2.2/gaming_store_api/register.php");
+      var url = Uri.parse("http://127.0.0.1/gaming_store_api/signup.php");
       var response = await http.post(
         url,
         body: {
@@ -54,7 +54,7 @@ class signup_controller extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar("error", "connection refused");
+      Get.snackbar("error", "an error occurred during registration");
     }
   }
 }
