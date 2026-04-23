@@ -17,26 +17,10 @@ class SignupView extends StatelessWidget {
           child: Column(
             children: [
               TextField(
-                controller: controller.firstNameController,
+                controller: controller.nameController,
                 decoration: const InputDecoration(
-                  hintText: "First Name",
+                  hintText: "Full Name",
                   prefixIcon: Icon(Icons.person),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: controller.lastNameController,
-                decoration: const InputDecoration(
-                  hintText: "Last Name",
-                  prefixIcon: Icon(Icons.person_outline),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: controller.phoneController,
-                decoration: const InputDecoration(
-                  hintText: "Phone Number",
-                  prefixIcon: Icon(Icons.phone),
                 ),
               ),
               const SizedBox(height: 10),

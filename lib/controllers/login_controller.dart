@@ -3,57 +3,74 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class login_controller extends GetxController {
-  final loginFormKey = GlobalKey<FormState>();
-
+class LoginController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   Future<void> login() async {
-    if (loginFormKey.currentState!.validate()) {
-      try {
-        var url = Uri.parse("http://10.0.2.2/gaming_store_api/login.php");
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "All fields are required",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
 
-        var response = await http.post(
-          url,
-          body: {
-            "email": emailController.text,
-            "password": passwordController.text,
-          },
-        );
+    try {
+      var url = Uri.parse("http://127.0.0.1/gaming_store_api/login.php");
 
-        if (response.statusCode == 200) {
-          var serverData = json.decode(response.body);
+      var response = await http.post(
+        url,
+        body: {
+          "email": emailController.text.trim(),
+          "password": passwordController.text.trim(),
+        },
+      );
 
-          if (serverData['success'] == 1) {
-            Get.snackbar(
-              "Success",
-              "Login successful",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
-            );
+      print("LOGIN RESPONSE: ${response.body}");
 
-            Get.offAllNamed('/home');
-          } else {
-            Get.snackbar(
-              "Login Failed",
-              "Invalid email or password",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              colorText: Colors.white,
-            );
-          }
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+
+        if (data['success'] == 1) {
+          Get.snackbar(
+            "Success",
+            data['message'],
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+
+          Get.offAllNamed('/home');
+        } else {
+          Get.snackbar(
+            "Login Failed",
+            data['message'],
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
         }
-      } catch (e) {
+      } else {
         Get.snackbar(
           "Error",
-          "Check your XAMPP connection",
+          "Server error",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.orange,
           colorText: Colors.white,
         );
       }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Cannot connect to server",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
     }
   }
 

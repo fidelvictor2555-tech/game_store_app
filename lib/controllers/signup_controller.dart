@@ -4,23 +4,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class signup_controller extends GetxController {
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  final phoneController = TextEditingController();
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordAgainController = TextEditingController();
 
   Future<void> register() async {
-    if (firstNameController.text.isEmpty) {
-      Get.snackbar("error", "please enter first name");
-      return;
-    } else if (lastNameController.text.isEmpty) {
-      Get.snackbar("error", "enter last name");
-      return;
-    } else if (phoneController.text.isEmpty) {
-      Get.snackbar("error", "please enter phone number");
-      return;
+    if (nameController.text.isEmpty) {
+      Get.snackbar("error", "please enter full name");
     } else if (passwordController.text.isEmpty ||
         passwordAgainController.text.isEmpty ||
         passwordController.text != passwordAgainController.text) {
@@ -33,27 +24,38 @@ class signup_controller extends GetxController {
 
     try {
       var url = Uri.parse("http://127.0.0.1/gaming_store_api/signup.php");
+      print("NAME: ${nameController.text}");
+      print("EMAIL: ${emailController.text}");
+      print("PASSWORD: ${passwordController.text}");
+
       var response = await http.post(
         url,
         body: {
-          "f_name": firstNameController.text,
-          "l_name": lastNameController.text,
-          "phone": phoneController.text,
+          "name": nameController.text,
           "email": emailController.text,
           "password": passwordController.text,
         },
       );
 
+      print("RAW RESPONSE: ${response.body}");
+
       if (response.statusCode == 200) {
         var serverData = json.decode(response.body);
+
         if (serverData['success'] == 1) {
           Get.snackbar("success", "you are registered");
           Get.offAllNamed('/login');
         } else {
-          Get.snackbar("registration", "registration failed");
+          Get.snackbar(
+            "registration",
+            serverData['message'] ?? "registration failed",
+          );
         }
+      } else {
+        Get.snackbar("error", "server error: ${response.statusCode}");
       }
     } catch (e) {
+      print(e);
       Get.snackbar("error", "an error occurred during registration");
     }
   }
