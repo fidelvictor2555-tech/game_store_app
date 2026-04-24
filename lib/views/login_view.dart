@@ -16,7 +16,6 @@ class _LoginViewState extends State<LoginView> {
   final LoginController controller = Get.find<LoginController>();
 
   void _handleLogin() {
-    print("LOGIN BUTTON PRESSED");
 
     controller.emailController.text = _usernameController.text.trim();
     controller.passwordController.text = _passwordController.text.trim();

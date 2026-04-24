@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_application_1/controllers/home_controller.dart';
+import 'package:flutter_application_1/controllers/session_controller.dart';
 import 'shopping_cart.dart';
 import 'inventory.dart';
 import 'find_people.dart';
@@ -61,6 +62,8 @@ class HomeContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final session = Get.find<SessionController>();
+
     final List<String> titles = [
       "Consoles",
       "Video Games",
@@ -99,9 +102,9 @@ class HomeContentView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Hello User",
-                  style: TextStyle(
+                Text(
+                  "Hello ${session.user.value?.email ?? 'User'}",
+                  style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 24,
                     color: Colors.white,

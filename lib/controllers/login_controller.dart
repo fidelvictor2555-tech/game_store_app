@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_application_1/controllers/session_controller.dart';
+import 'package:flutter_application_1/models/user_model.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -30,8 +32,6 @@ class LoginController extends GetxController {
         },
       );
 
-      print("LOGIN RESPONSE: ${response.body}");
-
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
 
@@ -44,7 +44,10 @@ class LoginController extends GetxController {
             colorText: Colors.white,
           );
 
-          Get.offAllNamed('/home');
+          final session = Get.find<SessionController>();
+
+          session.setUser(UserModel(email: emailController.text.trim()));
+          Get.offAllNamed('/homescreen');
         } else {
           Get.snackbar(
             "Login Failed",
