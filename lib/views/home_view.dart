@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_application_1/controllers/home_controller.dart';
 import 'package:flutter_application_1/controllers/session_controller.dart';
 import 'shopping_cart.dart';
 import 'inventory.dart';
 import 'find_people.dart';
 import 'profile.dart';
+import 'package:flutter_application_1/views/product_detail.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const HomeContentView(),
     const shopping_cart(),
-    const inventory(),
+    const Inventory(),
     const find_people(),
     const profile(),
   ];
@@ -30,28 +30,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
       body: IndexedStack(index: _activePage, children: _pages),
-      bottomNavigationBar: CurvedNavigationBar(
-        index: _activePage,
-        animationCurve: Curves.decelerate,
-        animationDuration: const Duration(milliseconds: 300),
-        backgroundColor: Colors.transparent,
-        color: Colors.cyan,
-        buttonBackgroundColor: Colors.cyan,
-        height: 60,
-        items: const <Widget>[
-          Icon(Icons.home, size: 30, color: Colors.white),
-          Icon(Icons.shopping_cart, size: 30, color: Colors.white),
-          Icon(Icons.list_alt_outlined, size: 30, color: Colors.white),
-          Icon(Icons.people_outlined, size: 30, color: Colors.white),
-          Icon(Icons.person, size: 30, color: Colors.white),
-        ],
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _activePage,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.cyan,
+        unselectedItemColor: Colors.grey,
         onTap: (index) {
           setState(() {
             _activePage = index;
           });
         },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: "Shop",
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: "Cart"),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: "People"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+        ],
       ),
     );
   }
@@ -64,31 +64,28 @@ class HomeContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = Get.find<SessionController>();
 
-    final List<String> titles = [
-      "Consoles",
-      "Video Games",
-      "Controllers",
-      "Headsets",
-      "Keyboards",
-      "Gaming Mice",
+    final List<Map<String, dynamic>> categories = [
+      {"title": "Consoles", "icon": Icons.sports_esports},
+      {"title": "Games", "icon": Icons.videogame_asset},
+      {"title": "Headsets", "icon": Icons.headset},
+      {"title": "PC Setup", "icon": Icons.computer},
+      {"title": "Accessories", "icon": Icons.mouse},
     ];
 
-    final List<String> values = ["15", "140", "22", "18", "30", "25"];
-
-    final List<IconData> icons = [
-      Icons.videogame_asset,
-      Icons.sports_esports,
-      Icons.gamepad,
-      Icons.headset,
-      Icons.keyboard,
-      Icons.mouse,
+    final List<Map<String, dynamic>> featured = [
+      {"name": "PS5 Console", "price": 75000, "image": "assets/images/ps5.jpg"},
+      {
+        "name": "Gaming PC",
+        "price": 120000,
+        "image": "assets/images/gamingpc.jpg",
+      },
+      {"name": "Headset", "price": 25000, "image": "assets/images/headset.jpg"},
+      {"name": "Monitor", "price": 80000, "image": "assets/images/monitor.jpg"},
     ];
 
     return Stack(
       children: [
         Container(
-          width: double.infinity,
-          height: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/images/profile_bg.png"),
@@ -96,79 +93,168 @@ class HomeContentView extends StatelessWidget {
             ),
           ),
         ),
-        SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+
+        SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Hello ${session.user.value?.email ?? 'User'}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 24,
-                    color: Colors.white,
+                // HEADER
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    "Welcome, ${session.user.value?.email ?? 'Player'}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
+
+                // BANNER
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: const DecorationImage(
+                      image: AssetImage("assets/images/ps5.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.8),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    alignment: Alignment.bottomLeft,
+                    padding: const EdgeInsets.all(16),
+                    child: const Text(
+                      "Next Gen Gaming Store",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // CATEGORIES
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    "Categories",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
                 const SizedBox(height: 10),
-                const SizedBox(height: 30),
+
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final item = categories[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/marketplace', arguments: item["title"]);
+                        },
+                        child: Container(
+                          width: 100,
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(item["icon"], color: Colors.cyan),
+                              const SizedBox(height: 5),
+                              Text(item["title"]),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // FEATURED
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    "Featured Products",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
 
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: titles.length,
+                  padding: const EdgeInsets.all(12),
+                  itemCount: featured.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                    childAspectRatio: 1.1,
+                    childAspectRatio: 0.8,
                   ),
                   itemBuilder: (context, index) {
+                    final product = featured[index];
+
                     return GestureDetector(
                       onTap: () {
-                        Get.toNamed('/marketplace', arguments: titles[index]);
+                        Get.toNamed("/product", arguments: product);
                       },
                       child: Container(
+                        margin: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
+                          color: Colors.white.withOpacity(0.95),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(icons[index], size: 40, color: Colors.cyan),
-                            const SizedBox(height: 8),
+                            Image.asset(product["image"], height: 80),
+                            const SizedBox(height: 10),
                             Text(
-                              titles[index],
+                              product["name"],
                               style: const TextStyle(
-                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87,
                               ),
                             ),
-                            Text(
-                              values[index],
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.cyan,
-                              ),
-                            ),
+                            Text("KSh ${product["price"]}"),
                           ],
                         ),
                       ),
                     );
                   },
                 ),
-
-                const SizedBox(height: 100),
               ],
             ),
           ),

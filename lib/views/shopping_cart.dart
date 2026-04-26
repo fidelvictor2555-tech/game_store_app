@@ -17,38 +17,38 @@ class _shopping_cartState extends State<shopping_cart> {
     {
       "name": "PS5 Console",
       "category": "Consoles",
-      "price": 75000.0,
-      "image": "http://10.0.2.2/gaming_store_api/images/ps5.jpg",
+      "price": 75000,
+      "image": "assets/images/ps5.jpg",
     },
     {
       "name": "Gaming PC Desktop",
       "category": "Video Games",
-      "price": 120000.0,
-      "image": "http://10.0.2.2/gaming_store_api/images/gamingpc.jpg",
+      "price": 120000,
+      "image": "assets/images/gamingpc.jpg",
     },
     {
       "name": "Gaming Headset",
       "category": "Headsets",
-      "price": 25000.0,
-      "image": "http://10.0.2.2/gaming_store_api/images/headset.jpg",
+      "price": 25000,
+      "image": "assets/images/headset.jpg",
     },
     {
       "name": "4K Monitor",
       "category": "Consoles",
-      "price": 80000.0,
-      "image": "http://10.0.2.2/gaming_store_api/images/monitor.jpg",
+      "price": 80000,
+      "image": "assets/images/monitor.jpg",
     },
     {
       "name": "Mechanical Keyboard",
       "category": "Keyboards",
-      "price": 5000.0,
-      "image": "http://10.0.2.2/gaming_store_api/images/keyboard.jpg",
+      "price": 5000,
+      "image": "assets/images/keyboard.jpg",
     },
     {
       "name": "Gaming Mouse",
       "category": "Gaming Mice",
-      "price": 2000.0,
-      "image": "http://10.0.2.2/gaming_store_api/images/mouse.jpg",
+      "price": 2000,
+      "image": "assets/images/mouse.jpg",
     },
   ];
 
@@ -97,6 +97,7 @@ class _shopping_cartState extends State<shopping_cart> {
           ),
         ],
       ),
+
       body: Stack(
         children: [
           Container(
@@ -109,8 +110,10 @@ class _shopping_cartState extends State<shopping_cart> {
               ),
             ),
           ),
+
           Column(
             children: [
+              // SEARCH BAR
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
@@ -127,6 +130,8 @@ class _shopping_cartState extends State<shopping_cart> {
                   ),
                 ),
               ),
+
+              // PRODUCTS GRID
               Expanded(
                 child: GridView.builder(
                   padding: const EdgeInsets.all(10),
@@ -148,29 +153,37 @@ class _shopping_cartState extends State<shopping_cart> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.network(
+                          Image.asset(
                             product["image"],
                             height: 90,
                             width: 90,
                             fit: BoxFit.cover,
                           ),
+
                           const SizedBox(height: 10),
+
                           Text(
                             product["name"],
                             textAlign: TextAlign.center,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
+
                           const SizedBox(height: 5),
+
                           Text(product["category"]),
+
                           const SizedBox(height: 5),
+
                           Text("KSh ${product["price"]}"),
+
                           const SizedBox(height: 10),
+
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.cyan,
                             ),
                             onPressed: () {
-                              cart.addToCart(product);
+                              cart.addToCart(product, 1);
 
                               Get.snackbar(
                                 "Added to Cart",

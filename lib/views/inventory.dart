@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 
-class inventory extends StatelessWidget {
-  const inventory({super.key});
+class Inventory extends StatelessWidget {
+  const Inventory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,14 @@ class inventory extends StatelessWidget {
 
           Obx(() {
             if (cart.cartItems.isEmpty) {
-              return const Center(
-                child: Text(
-                  "Cart is empty",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+              return Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  color: Colors.black.withOpacity(0.6),
+                  child: const Text(
+                    "Cart is empty",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 ),
               );
             }
@@ -42,6 +46,7 @@ class inventory extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 120),
                     itemCount: cart.cartItems.length,
                     itemBuilder: (context, index) {
                       final item = cart.cartItems[index];
@@ -53,7 +58,7 @@ class inventory extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ListTile(
-                          leading: Image.network(
+                          leading: Image.asset(
                             item["image"],
                             width: 50,
                             fit: BoxFit.cover,
@@ -73,14 +78,16 @@ class inventory extends StatelessWidget {
                 ),
 
                 Container(
+                  margin: const EdgeInsets.only(bottom: 80),
                   padding: const EdgeInsets.all(16),
-                  color: Colors.white.withOpacity(0.9),
+                  width: double.infinity,
+                  color: Colors.white.withOpacity(0.95),
                   child: Text(
                     "Total: KSh ${cart.totalPrice}",
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                   ),
                 ),
