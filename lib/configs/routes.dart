@@ -6,6 +6,7 @@ import 'package:flutter_application_1/views/signup_view.dart';
 import 'package:flutter_application_1/views/inventory.dart';
 import 'package:flutter_application_1/views/product_detail.dart';
 import 'package:flutter_application_1/views/checkout_page.dart';
+import 'package:flutter_application_1/views/order_history.dart';
 
 var routes = [
   GetPage(name: "/", page: () => const LoginView()),
@@ -15,4 +16,5 @@ var routes = [
   GetPage(name: "/inventory", page: () => const Inventory()),
   GetPage(name: "/product", page: () => const ProductDetail()),
   GetPage(name: "/checkout", page: () => const CheckoutPage()),
+  GetPage(name: "/orders", page: () => const OrderHistory()),
 ];

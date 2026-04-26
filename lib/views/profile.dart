@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_application_1/controllers/home_controller.dart';
+import 'package:flutter_application_1/controllers/session_controller.dart';
 
 class profile extends StatelessWidget {
   const profile({super.key});
@@ -9,10 +10,18 @@ class profile extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<home_controller>();
 
+    SessionController? session;
+
+    try {
+      session = Get.find<SessionController>();
+    } catch (e) {
+      session = null;
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.cyan,
-        title: Text("Profile"),
+        title: const Text("Profile"),
         centerTitle: true,
         foregroundColor: Colors.white,
       ),
@@ -27,41 +36,92 @@ class profile extends StatelessWidget {
               ),
             ),
           ),
+
           SafeArea(
             child: Column(
               children: [
+                const SizedBox(height: 20),
+
+                // USER INFO CARD
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.cyan,
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: Text(
+                          session?.user.value?.email ?? "Guest User",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: ListView(
                       children: [
                         _buildProfileOption(
+                          Icons.shopping_bag,
+                          "My Orders",
+                          controller,
+                          onPress: () {
+                            Get.toNamed("/orders");
+                          },
+                        ),
+
+                        _buildProfileOption(
                           Icons.person,
                           "Edit Profile",
                           controller,
                           onPress: () => _showEditProfileSheet(context),
                         ),
+
                         _buildProfileOption(
                           Icons.notifications,
                           "Notifications",
                           controller,
                         ),
+
                         _buildProfileOption(
                           Icons.security,
                           "Privacy & Security",
                           controller,
                         ),
+
                         _buildProfileOption(
                           Icons.help,
                           "Help Support",
                           controller,
                         ),
+
                         _buildProfileOption(
                           Icons.settings,
                           "Settings",
                           controller,
                         ),
-                        _buildProfileOption(Icons.menu, "About", controller),
+
+                        _buildProfileOption(Icons.info, "About", controller),
+
                         _buildProfileOption(
                           Icons.logout,
                           "Logout",
@@ -103,18 +163,24 @@ class profile extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 40),
+
             TextField(
               style: const TextStyle(color: Colors.white),
               decoration: _inputStyle("New Email", Icons.email_outlined),
             ),
+
             const SizedBox(height: 15),
+
             TextField(
               obscureText: true,
               style: const TextStyle(color: Colors.white),
               decoration: _inputStyle("New Password", Icons.lock_outline),
             ),
+
             const SizedBox(height: 25),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -127,18 +193,11 @@ class profile extends StatelessWidget {
                   Get.snackbar(
                     "Success",
                     "Profile updated!",
-                    snackPosition: SnackPosition.BOTTOM,
                     backgroundColor: Colors.green,
                     colorText: Colors.white,
                   );
                 },
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: const Text("Save Changes"),
               ),
             ),
           ],

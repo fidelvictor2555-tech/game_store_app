@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key});
@@ -96,18 +98,41 @@ class CheckoutPage extends StatelessWidget {
                           backgroundColor: Colors.green,
                           minimumSize: const Size(double.infinity, 45),
                         ),
-                        onPressed: () {
-                          cart.cartItems.clear();
 
-                          Get.snackbar(
-                            "Success",
-                            "Order placed successfully!",
-                            backgroundColor: Colors.green,
-                            colorText: Colors.white,
+                        onPressed: () async {
+                          final response = await http.post(
+                            Uri.parse(
+                              "http://127.0.0.1/gaming_store_api/place_order.php",
+                            ),
+                            headers: {"Content-Type": "application/json"},
+                            body: jsonEncode({
+                              "email": "testuser@gmail.com",
+                              "total": cart.totalPrice,
+                              "items": cart.cartItems,
+                            }),
                           );
 
-                          Get.offAllNamed('/');
+                          if (response.statusCode == 200) {
+                            cart.clearCart();
+
+                            Get.snackbar(
+                              "Success",
+                              "Order saved to database",
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                            );
+
+                            Get.offAllNamed("/homescreen");
+                          } else {
+                            Get.snackbar(
+                              "Error",
+                              "Failed to save order",
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                            );
+                          }
                         },
+
                         child: const Text("Confirm Purchase"),
                       ),
                     ],
