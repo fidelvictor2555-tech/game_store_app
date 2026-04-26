@@ -112,6 +112,7 @@ class HomeContentView extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 30),
+
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -123,44 +124,50 @@ class HomeContentView extends StatelessWidget {
                     childAspectRatio: 1.1,
                   ),
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(icons[index], size: 40, color: Colors.cyan),
-                          const SizedBox(height: 8),
-                          Text(
-                            titles[index],
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                    return GestureDetector(
+                      onTap: () {
+                        Get.toNamed('/marketplace', arguments: titles[index]);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
                             ),
-                          ),
-                          Text(
-                            values[index],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.cyan,
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(icons[index], size: 40, color: Colors.cyan),
+                            const SizedBox(height: 8),
+                            Text(
+                              titles[index],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              values[index],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.cyan,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
                 ),
+
                 const SizedBox(height: 100),
               ],
             ),
