@@ -6,7 +6,6 @@ import 'shopping_cart.dart';
 import 'inventory.dart';
 import 'find_people.dart';
 import 'profile.dart';
-import 'package:flutter_application_1/views/product_detail.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -112,14 +111,13 @@ class HomeContentView extends StatelessWidget {
                   ),
                 ),
 
-                // BANNER
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   height: 180,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: const DecorationImage(
-                      image: AssetImage("assets/images/ps5.jpg"),
+                      image: AssetImage("assets/images/deals.jpg"),
                       fit: BoxFit.cover,
                     ),
                   ),
