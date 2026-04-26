@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     const HomeContentView(),
-    const shopping_cart(),
+    const ShoppingCart(),
     const Inventory(),
     const find_people(),
     const profile(),

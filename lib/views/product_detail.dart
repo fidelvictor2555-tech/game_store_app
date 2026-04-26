@@ -11,11 +11,11 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail> {
   int quantity = 1;
-  final cart = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
     final product = Get.arguments;
+    final cart = Get.find<CartController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -23,6 +23,7 @@ class _ProductDetailState extends State<ProductDetail> {
         backgroundColor: Colors.cyan,
         foregroundColor: Colors.white,
       ),
+
       body: Stack(
         children: [
           Container(
@@ -36,92 +37,123 @@ class _ProductDetailState extends State<ProductDetail> {
 
           Column(
             children: [
-              const SizedBox(height: 20),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
 
-              Image.asset(product["image"], height: 200),
+                      Container(
+                        height: 220,
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage(product["image"]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
 
-              const SizedBox(height: 20),
+                      const SizedBox(height: 20),
+
+                      Container(
+                        margin: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.95),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product["name"],
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Text(
+                              "KSh ${product["price"]}",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.cyan,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            const Text(
+                              "Quantity",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    if (quantity > 1) {
+                                      setState(() => quantity--);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.remove),
+                                ),
+
+                                Text(
+                                  "$quantity",
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() => quantity++);
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
               Container(
-                margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.95),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      product["name"],
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                width: double.infinity,
+                color: Colors.white,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.cyan,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  onPressed: () {
+                    cart.addToCart(product, quantity);
 
-                    const SizedBox(height: 10),
-
-                    Text(
-                      "KSh ${product["price"]}",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.cyan,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            if (quantity > 1) {
-                              setState(() {
-                                quantity--;
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.remove),
-                        ),
-
-                        Text(
-                          quantity.toString(),
-                          style: const TextStyle(fontSize: 18),
-                        ),
-
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              quantity++;
-                            });
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      onPressed: () {
-                        cart.addToCart(product, quantity);
-
-                        Get.snackbar(
-                          "Added to Cart",
-                          "${product["name"]} x$quantity",
-                          backgroundColor: Colors.green,
-                          colorText: Colors.white,
-                        );
-                      },
-                      child: const Text("Add to Cart"),
-                    ),
-                  ],
+                    Get.snackbar(
+                      "Added to Cart",
+                      "${product["name"]} x$quantity",
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                    );
+                  },
+                  child: const Text(
+                    "Add to Cart",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
             ],

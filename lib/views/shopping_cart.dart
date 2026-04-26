@@ -1,81 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import '../controllers/cart_controller.dart';
 
-class shopping_cart extends StatefulWidget {
-  const shopping_cart({super.key});
+class ShoppingCart extends StatefulWidget {
+  const ShoppingCart({super.key});
 
   @override
-  State<shopping_cart> createState() => _shopping_cartState();
+  State<ShoppingCart> createState() => _ShoppingCartState();
 }
 
-class _shopping_cartState extends State<shopping_cart> {
-  final TextEditingController searchController = TextEditingController();
+class _ShoppingCartState extends State<ShoppingCart> {
   final CartController cart = Get.find<CartController>();
+  final TextEditingController searchController = TextEditingController();
 
-  List<Map<String, dynamic>> allProducts = [
-    {
-      "name": "PS5 Console",
-      "category": "Consoles",
-      "price": 75000,
-      "image": "assets/images/ps5.jpg",
-    },
-    {
-      "name": "Gaming PC Desktop",
-      "category": "Video Games",
-      "price": 120000,
-      "image": "assets/images/gamingpc.jpg",
-    },
-    {
-      "name": "Gaming Headset",
-      "category": "Headsets",
-      "price": 25000,
-      "image": "assets/images/headset.jpg",
-    },
-    {
-      "name": "4K Monitor",
-      "category": "Consoles",
-      "price": 80000,
-      "image": "assets/images/monitor.jpg",
-    },
-    {
-      "name": "Mechanical Keyboard",
-      "category": "Keyboards",
-      "price": 5000,
-      "image": "assets/images/keyboard.jpg",
-    },
-    {
-      "name": "Gaming Mouse",
-      "category": "Gaming Mice",
-      "price": 2000,
-      "image": "assets/images/mouse.jpg",
-    },
-  ];
-
-  List<Map<String, dynamic>> filteredProducts = [];
+  List products = [];
+  List filteredProducts = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    fetchProducts();
+  }
 
-    filteredProducts = allProducts;
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(
+        Uri.parse("http://127.0.0.1/gaming_store_api/get_products.php"),
+      );
 
-    final category = Get.arguments;
+      final data = jsonDecode(response.body);
 
-    if (category != null) {
-      filteredProducts = allProducts
-          .where((p) => p["category"] == category)
-          .toList();
+      if (data["success"] == true) {
+        setState(() {
+          products = data["products"];
+          filteredProducts = products;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+
+      Get.snackbar(
+        "Error",
+        "Failed to load products",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
-  void searchProduct(String query) {
+  void search(String query) {
     setState(() {
-      filteredProducts = allProducts
-          .where(
-            (product) =>
-                product["name"].toLowerCase().contains(query.toLowerCase()),
-          )
+      filteredProducts = products
+          .where((p) => p["name"].toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -84,16 +65,13 @@ class _shopping_cartState extends State<shopping_cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.cyan,
         title: const Text("Marketplace"),
-        centerTitle: true,
+        backgroundColor: Colors.cyan,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            onPressed: () {
-              Get.toNamed('/inventory');
-            },
             icon: const Icon(Icons.shopping_cart),
+            onPressed: () => Get.toNamed("/inventory"),
           ),
         ],
       ),
@@ -101,8 +79,6 @@ class _shopping_cartState extends State<shopping_cart> {
       body: Stack(
         children: [
           Container(
-            width: double.infinity,
-            height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/profile_bg.png"),
@@ -111,98 +87,103 @@ class _shopping_cartState extends State<shopping_cart> {
             ),
           ),
 
-          Column(
-            children: [
-              // SEARCH BAR
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: searchProduct,
-                  decoration: InputDecoration(
-                    hintText: "Search products...",
-                    prefixIcon: const Icon(Icons.search),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: search,
+                        decoration: InputDecoration(
+                          hintText: "Search products...",
+                          prefixIcon: const Icon(Icons.search),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
 
-              // PRODUCTS GRID
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: filteredProducts.length,
-                  itemBuilder: (context, index) {
-                    final product = filteredProducts[index];
-
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.95),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            product["image"],
-                            height: 90,
-                            width: 90,
-                            fit: BoxFit.cover,
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          Text(
-                            product["name"],
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-
-                          const SizedBox(height: 5),
-
-                          Text(product["category"]),
-
-                          const SizedBox(height: 5),
-
-                          Text("KSh ${product["price"]}"),
-
-                          const SizedBox(height: 10),
-
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.cyan,
+                    Expanded(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.all(10),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
                             ),
-                            onPressed: () {
-                              cart.addToCart(product, 1);
+                        itemCount: filteredProducts.length,
+                        itemBuilder: (context, index) {
+                          final product = filteredProducts[index];
 
-                              Get.snackbar(
-                                "Added to Cart",
-                                product["name"],
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                              );
+                          return GestureDetector(
+                            onTap: () {
+                              Get.toNamed("/product", arguments: product);
                             },
-                            child: const Text("Add to Cart"),
-                          ),
-                        ],
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.95),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.network(
+                                    product["image"],
+                                    height: 90,
+                                    width: 90,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) =>
+                                        const Icon(Icons.broken_image),
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  Text(
+                                    product["name"],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 5),
+
+                                  Text("KSh ${product["price"]}"),
+
+                                  const SizedBox(height: 10),
+
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.cyan,
+                                    ),
+                                    onPressed: () {
+                                      cart.addToCart(product, 1);
+
+                                      Get.snackbar(
+                                        "Added to Cart",
+                                        product["name"],
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                      );
+                                    },
+                                    child: const Text("Add to Cart"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ],
       ),
     );
