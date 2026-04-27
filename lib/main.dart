@@ -5,11 +5,13 @@ import 'package:flutter_application_1/configs/routes.dart';
 import 'package:flutter_application_1/controllers/login_controller.dart';
 import 'package:flutter_application_1/controllers/session_controller.dart';
 import 'package:flutter_application_1/controllers/cart_controller.dart';
+import 'package:flutter_application_1/views/admin_panel.dart';
 
 void main() {
   Get.put(LoginController());
   Get.put(SessionController());
   Get.put(CartController());
+  GetPage(name: "/admin", page: () => const AdminPanel());
 
   runApp(const MyApp());
 }
