@@ -8,7 +8,6 @@ class DatabaseService {
   static Future<Map<String, dynamic>> signup({
     required String name,
     required String email,
-    required String phone,
     required String password,
   }) async {
     try {

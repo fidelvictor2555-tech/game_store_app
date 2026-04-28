@@ -11,185 +11,223 @@ class SignUpPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+
+      // APP BAR (your cyan theme restored)
       appBar: AppBar(
         backgroundColor: Colors.cyan,
-        title: const Text(
-          "",
-          style: TextStyle(color: Color.fromARGB(255, 7, 175, 187)),
-        ),
+        elevation: 0,
         centerTitle: true,
+        title: const Text(
+          "Create Account",
+          style: TextStyle(
+            color: Color.fromARGB(255, 6, 118, 126),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
+
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
-              Image.asset('assets/images/dental_logo.png', height: 140),
+              // LOGO (your original style)
+              Image.asset('assets/images/dental_logo.png', height: 150),
 
               const SizedBox(height: 10),
 
-              const Text(
-                "Welcome",
+              Text(
+                "Welcome Gamer 👾",
                 style: TextStyle(
+                  color: Colors.cyan[700],
                   fontSize: 14,
                   fontStyle: FontStyle.italic,
-                  color: Color.fromARGB(255, 7, 175, 187),
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-              const Align(
+              // FULL NAME
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Full Name",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.cyan[900],
+                  ),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
+
               TextField(
                 controller: controller.nameController,
                 decoration: InputDecoration(
-                  hintText: "Enter full name",
-                  prefixIcon: const Icon(Icons.person),
+                  hintText: "Enter your full name",
+                  prefixIcon: const Icon(Icons.person, color: Colors.cyan),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
-              const Align(
+              // EMAIL
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Email",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.cyan[900],
+                  ),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
+
               TextField(
                 controller: controller.emailController,
-                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: "Enter email",
-                  prefixIcon: const Icon(Icons.email),
+                  hintText: "Enter your email",
+                  prefixIcon: const Icon(Icons.email, color: Colors.cyan),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
-              const Align(
+              // PASSWORD
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Password",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.cyan[900],
+                  ),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
+
               Obx(
                 () => TextField(
                   controller: controller.passwordController,
                   obscureText: !controller.isPassVisible.value,
                   decoration: InputDecoration(
                     hintText: "Enter password",
-                    prefixIcon: const Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock, color: Colors.cyan),
                     suffixIcon: IconButton(
-                      onPressed: controller.togglePassword,
                       icon: Icon(
                         controller.isPassVisible.value
                             ? Icons.visibility
                             : Icons.visibility_off,
+                        color: Colors.cyan,
                       ),
+                      onPressed: controller.togglePassword,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
-              const Align(
+              // CONFIRM PASSWORD
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Confirm Password",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.cyan[900],
+                  ),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
+
               Obx(
                 () => TextField(
                   controller: controller.confirmPasswordController,
                   obscureText: !controller.isConfirmPassVisible.value,
                   decoration: InputDecoration(
-                    hintText: "Confirm password",
-                    prefixIcon: const Icon(Icons.lock_outline),
+                    hintText: "Re-enter password",
+                    prefixIcon: const Icon(
+                      Icons.lock_outline,
+                      color: Colors.cyan,
+                    ),
                     suffixIcon: IconButton(
-                      onPressed: controller.toggleConfirmPassword,
                       icon: Icon(
                         controller.isConfirmPassVisible.value
                             ? Icons.visibility
                             : Icons.visibility_off,
+                        color: Colors.cyan,
                       ),
+                      onPressed: controller.toggleConfirmPassword,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
+              // SIGNUP BUTTON (your theme restored)
               Obx(
                 () => SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.cyan,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
                     onPressed: controller.isLoading.value
                         ? null
                         : () async {
                             final success = await controller.signup();
-                            if (success) {
-                              Get.offAllNamed('/');
-                            }
+                            if (success) Get.offAllNamed('/');
                           },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 7, 175, 187),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
                     child: controller.isLoading.value
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                             "Sign Up",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
-              // LOGIN LINK
+              // LOGIN LINK (your style restored)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Already have an account? "),
                   GestureDetector(
                     onTap: () => Get.offAllNamed('/'),
-                    child: const Text(
+                    child: Text(
                       "Login",
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: Colors.cyan[800],
                         fontWeight: FontWeight.bold,
                       ),
                     ),

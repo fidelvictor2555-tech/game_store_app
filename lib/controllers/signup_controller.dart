@@ -3,99 +3,76 @@ import 'package:get/get.dart';
 import 'package:flutter_application_1/services/database_service.dart';
 
 class SignupController extends GetxController {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  var isPassVisible = true.obs;
+  var isPassVisible = false.obs;
+  var isConfirmPassVisible = false.obs;
   var isLoading = false.obs;
 
-  TextEditingController? nameController;
-
-  TextEditingController? confirmPasswordController;
-
-  var isConfirmPassVisible = true.obs;
-
-  VoidCallback? toggleConfirmPassword;
-
   void togglePassword() => isPassVisible.value = !isPassVisible.value;
+  void toggleConfirmPassword() =>
+      isConfirmPassVisible.value = !isConfirmPassVisible.value;
 
   Future<bool> signup() async {
+    final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
+    final confirm = confirmPasswordController.text.trim();
 
     // VALIDATION
-    if (email.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        "Missing Fields",
-        "Email and password are required",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.amber[100],
-        colorText: Colors.brown[800],
-      );
+    if (name.isEmpty || email.isEmpty || password.isEmpty || confirm.isEmpty) {
+      Get.snackbar("Error", "All fields are required");
       return false;
     }
 
     if (!GetUtils.isEmail(email)) {
-      Get.snackbar(
-        "Invalid Email",
-        "Please enter a valid email address",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.amber[100],
-        colorText: Colors.brown[800],
-      );
+      Get.snackbar("Error", "Invalid email");
       return false;
     }
 
     if (password.length < 6) {
-      Get.snackbar(
-        "Weak Password",
-        "Password must be at least 6 characters",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.amber[100],
-        colorText: Colors.brown[800],
-      );
+      Get.snackbar("Error", "Password too weak");
+      return false;
+    }
+
+    if (password != confirm) {
+      Get.snackbar("Error", "Passwords do not match");
       return false;
     }
 
     isLoading.value = true;
 
     final response = await DatabaseService.signup(
-      name: "", // backend compatibility if still required
+      name: name,
       email: email,
-      phone: "", // removed from UI but kept for backend compatibility
       password: password,
     );
 
     isLoading.value = false;
 
     if (response["success"] == true) {
+      nameController.clear();
       emailController.clear();
       passwordController.clear();
+      confirmPasswordController.clear();
 
-      Get.snackbar(
-        "Account Created",
-        "You can now log in",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green[100],
-        colorText: Colors.green[800],
-      );
+      Get.snackbar("Success", "Account created");
       return true;
     } else {
-      Get.snackbar(
-        "Sign Up Failed",
-        response["message"] ?? "Something went wrong",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[800],
-      );
+      Get.snackbar("Failed", response["message"] ?? "Signup failed");
       return false;
     }
   }
 
   @override
   void onClose() {
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.onClose();
   }
 }
