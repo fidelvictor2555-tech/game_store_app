@@ -10,14 +10,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   final LoginController loginController = Get.put(LoginController());
 
   @override
   void dispose() {
-    emailController.dispose();
+    usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -28,58 +27,77 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
 
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 7, 175, 187),
+        backgroundColor: Colors.cyan,
         elevation: 0,
-        title: const Text(
-          "",
-          style: TextStyle(color: Color.fromARGB(255, 212, 212, 212)),
-        ),
         centerTitle: true,
+        title: const Text(
+          "Gaming Store",
+          style: TextStyle(
+            color: Color.fromARGB(255, 6, 118, 126),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(12),
         child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Image.asset('assets/images/dental_logo.png', height: 200),
 
-              const SizedBox(height: 20),
+              Image.asset('assets/images/dental_logo.png', height: 160),
 
-              // EMAIL
-              const Row(
-                children: [
-                  Text(
-                    "Email",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                  ),
-                ],
+              const SizedBox(height: 10),
+
+              Text(
+                "Welcome Back Gamer 🎮",
+                style: TextStyle(
+                  color: Colors.cyan[700],
+                  fontStyle: FontStyle.italic,
+                ),
               ),
 
+              const SizedBox(height: 30),
+
+              // USERNAME
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Email",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.cyan[900],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+
               TextField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
+                controller: usernameController,
                 decoration: InputDecoration(
                   hintText: "Enter your email",
-                  prefixIcon: const Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.person, color: Colors.cyan),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 20),
 
               // PASSWORD
-              const Row(
-                children: [
-                  Text(
-                    "Password",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Password",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.cyan[900],
                   ),
-                ],
+                ),
               ),
+              const SizedBox(height: 5),
 
               Obx(
                 () => TextField(
@@ -87,17 +105,18 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: !loginController.isPassVisible.value,
                   decoration: InputDecoration(
                     hintText: "Enter password",
-                    prefixIcon: const Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock, color: Colors.cyan),
                     suffixIcon: IconButton(
-                      onPressed: loginController.togglePassword,
                       icon: Icon(
                         loginController.isPassVisible.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.cyan,
                       ),
+                      onPressed: loginController.togglePassword,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                   ),
                 ),
@@ -107,40 +126,33 @@ class _LoginPageState extends State<LoginPage> {
 
               // LOGIN BUTTON
               Obx(
-                () => GestureDetector(
-                  onTap: loginController.isLoading.value
-                      ? null
-                      : () async {
-                          final success = await loginController.login(
-                            emailController.text,
-                            passwordController.text,
-                          );
-
-                          if (success) {
-                            Get.offAllNamed('/homepage');
-                          }
-                        },
-                  child: Container(
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: loginController.isLoading.value
-                          ? Colors.grey
-                          : const Color.fromARGB(255, 7, 175, 187),
-                      borderRadius: BorderRadius.circular(20),
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.cyan,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
                     ),
+                    onPressed: loginController.isLoading.value
+                        ? null
+                        : () async {
+                            bool success = await loginController.login(
+                              usernameController.text,
+                              passwordController.text,
+                            );
+
+                            if (success) {
+                              Get.offAllNamed('/homepage');
+                            }
+                          },
                     child: loginController.isLoading.value
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          )
+                        ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                             "Login",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                   ),
                 ),
@@ -148,25 +160,22 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 15),
 
-              // SIGNUP LINK
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Don't have an account? "),
                   GestureDetector(
                     onTap: () => Get.toNamed('/signup'),
-                    child: const Text(
-                      "Sign up",
+                    child: Text(
+                      "Sign Up",
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: Colors.cyan[800],
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 10),
             ],
           ),
         ),

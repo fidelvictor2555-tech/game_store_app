@@ -28,7 +28,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
 
   Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse("http://127.0.0.1/gaming_store_api/get_products.php"),
+      Uri.parse("http://127.0.0.1/gaming_store_api/products.php"),
     );
 
     final data = jsonDecode(response.body);

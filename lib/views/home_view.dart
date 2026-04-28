@@ -82,7 +82,7 @@ class _HomeViewState extends State<HomeView> {
             Column(
               children: [
                 DrawerHeader(
-                  child: Image.asset("assets/images/profile_bg.png"),
+                  child: Image.asset("assets/images/dental_logo.png"),
                 ),
 
                 ListTile(

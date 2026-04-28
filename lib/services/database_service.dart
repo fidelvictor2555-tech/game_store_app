@@ -41,6 +41,10 @@ class DatabaseService {
           'password': password,
         }),
       );
+
+      print("RAW RESPONSE:");
+      print(res.body);
+
       return jsonDecode(res.body);
     } catch (e) {
       return {'success': false, 'message': 'Network error: $e'};
