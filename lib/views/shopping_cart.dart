@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../controllers/cart_controller.dart';
+import '../models/product_model.dart';
 
 class ShoppingCart extends StatefulWidget {
   const ShoppingCart({super.key});
@@ -13,11 +14,11 @@ class ShoppingCart extends StatefulWidget {
 }
 
 class _ShoppingCartState extends State<ShoppingCart> {
-  final CartController cart = Get.find<CartController>();
+  final CartController cart = Get.put(CartController());
   final TextEditingController searchController = TextEditingController();
 
-  List products = [];
-  List filteredProducts = [];
+  List<Product> products = [];
+  List<Product> filteredProducts = [];
   bool isLoading = true;
 
   @override
@@ -36,7 +37,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
 
       if (data["success"] == true) {
         setState(() {
-          products = data["products"];
+          products = (data["products"] as List)
+              .map((item) => Product.fromJson(item))
+              .toList();
+
           filteredProducts = products;
           isLoading = false;
         });
@@ -56,7 +60,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
   void search(String query) {
     setState(() {
       filteredProducts = products
-          .where((p) => p["name"].toLowerCase().contains(query.toLowerCase()))
+          .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -76,116 +80,93 @@ class _ShoppingCartState extends State<ShoppingCart> {
         ],
       ),
 
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/profile_bg.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: search,
-                        decoration: InputDecoration(
-                          hintText: "Search products...",
-                          prefixIcon: const Icon(Icons.search),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: search,
+                    decoration: InputDecoration(
+                      hintText: "Search products...",
+                      prefixIcon: const Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-
-                    Expanded(
-                      child: GridView.builder(
-                        padding: const EdgeInsets.all(10),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.75,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                            ),
-                        itemCount: filteredProducts.length,
-                        itemBuilder: (context, index) {
-                          final product = filteredProducts[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              Get.toNamed("/product", arguments: product);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.95),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.network(
-                                    product["image"],
-                                    height: 90,
-                                    width: 90,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
-                                        const Icon(Icons.broken_image),
-                                  ),
-
-                                  const SizedBox(height: 10),
-
-                                  Text(
-                                    product["name"],
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 5),
-
-                                  Text("KSh ${product["price"]}"),
-
-                                  const SizedBox(height: 10),
-
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.cyan,
-                                    ),
-                                    onPressed: () {
-                                      cart.addToCart(product, 1);
-
-                                      Get.snackbar(
-                                        "Added to Cart",
-                                        product["name"],
-                                        backgroundColor: Colors.green,
-                                        colorText: Colors.white,
-                                      );
-                                    },
-                                    child: const Text("Add to Cart"),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-        ],
-      ),
+
+                Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(10),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.75,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                    itemCount: filteredProducts.length,
+                    itemBuilder: (context, index) {
+                      final product = filteredProducts[index];
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              product.image,
+                              height: 90,
+                              width: 90,
+                              fit: BoxFit.cover,
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Text(
+                              product.name,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            Text("KSh ${product.price.toStringAsFixed(2)}"),
+
+                            const SizedBox(height: 10),
+
+                            ElevatedButton(
+                              onPressed: () {
+                                cart.addToCart(product, 1);
+
+                                Get.snackbar(
+                                  "Added to Cart",
+                                  product.name,
+                                  backgroundColor: Colors.green,
+                                  colorText: Colors.white,
+                                );
+                              },
+                              child: const Text("Add to Cart"),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

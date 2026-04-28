@@ -1,23 +1,18 @@
 import 'package:get/get.dart';
+import '../models/product_model.dart';
+import '../models/cart_item.dart';
 
 class CartController extends GetxController {
-  var cartItems = <Map<String, dynamic>>[].obs;
+  var cartItems = <CartItem>[].obs;
 
-  void addToCart(Map<String, dynamic> product, int quantity) {
-    final index = cartItems.indexWhere(
-      (item) => item["name"] == product["name"],
-    );
+  void addToCart(Product product, int quantity) {
+    final index = cartItems.indexWhere((item) => item.product.id == product.id);
 
     if (index >= 0) {
-      cartItems[index]["quantity"] += quantity;
+      cartItems[index].quantity += quantity;
       cartItems.refresh();
     } else {
-      cartItems.add({
-        "name": product["name"],
-        "price": product["price"],
-        "image": product["image"],
-        "quantity": quantity,
-      });
+      cartItems.add(CartItem(product: product, quantity: quantity));
     }
   }
 
@@ -26,13 +21,13 @@ class CartController extends GetxController {
   }
 
   void increaseQuantity(int index) {
-    cartItems[index]["quantity"]++;
+    cartItems[index].quantity++;
     cartItems.refresh();
   }
 
   void decreaseQuantity(int index) {
-    if (cartItems[index]["quantity"] > 1) {
-      cartItems[index]["quantity"]--;
+    if (cartItems[index].quantity > 1) {
+      cartItems[index].quantity--;
       cartItems.refresh();
     }
   }
@@ -40,7 +35,7 @@ class CartController extends GetxController {
   double get totalPrice {
     double total = 0;
     for (var item in cartItems) {
-      total += item["price"] * item["quantity"];
+      total += item.product.price * item.quantity;
     }
     return total;
   }

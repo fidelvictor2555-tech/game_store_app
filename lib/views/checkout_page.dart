@@ -47,7 +47,11 @@ class CheckoutPage extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Image.asset(item["image"], height: 60, width: 60),
+                            Image.asset(
+                              item.product.image,
+                              height: 60,
+                              width: 60,
+                            ),
 
                             const SizedBox(width: 10),
 
@@ -56,16 +60,16 @@ class CheckoutPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item["name"],
+                                    item.product.name,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
 
-                                  Text("Qty: ${item["quantity"]}"),
+                                  Text("Qty: ${item.quantity}"),
 
                                   Text(
-                                    "KSh ${item["price"] * item["quantity"]}",
+                                    "KSh ${item.product.price * item.quantity}",
                                   ),
                                 ],
                               ),

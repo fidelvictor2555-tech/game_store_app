@@ -98,7 +98,6 @@ class HomeContentView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // HEADER
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
@@ -148,7 +147,6 @@ class HomeContentView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // CATEGORIES
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
@@ -198,7 +196,6 @@ class HomeContentView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // FEATURED
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
