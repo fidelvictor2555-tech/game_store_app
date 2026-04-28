@@ -9,6 +9,14 @@ class SignupController extends GetxController {
   var isPassVisible = false.obs;
   var isLoading = false.obs;
 
+  TextEditingController? nameController;
+
+  TextEditingController? confirmPasswordController;
+
+  var isConfirmPassVisible;
+
+  VoidCallback? toggleConfirmPassword;
+
   void togglePassword() => isPassVisible.value = !isPassVisible.value;
 
   Future<bool> signup() async {

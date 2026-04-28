@@ -33,4 +33,13 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/
+    - assets/images/dental_logo.png
+    - assets/images/profile_bg.png
+    - assets/images/fifa26.jpg
+    - assets/images/gamingpc.jpg
+    - assets/images/headset.jpg
+    - assets/images/keyboard.jpg
+    - assets/images/mouse.jpg
+    - assets/images/monitor.jpg
+    - assets/images/ps5.jpg
+    - assets/images/deals.jpg
