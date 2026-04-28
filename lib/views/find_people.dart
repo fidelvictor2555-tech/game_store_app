@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class find_people extends StatelessWidget {
-  const find_people({super.key});
+class FindPeople extends StatelessWidget {
+  const FindPeople({super.key});
 
   @override
   Widget build(BuildContext context) {

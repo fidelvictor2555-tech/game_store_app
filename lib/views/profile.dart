@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:flutter_application_1/controllers/home_controller.dart';
 import 'package:flutter_application_1/controllers/session_controller.dart';
 
-class profile extends StatelessWidget {
-  const profile({super.key});
+class Profile extends StatelessWidget {
+  const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<home_controller>();
+    final controller = Get.find<HomeController>();
 
     SessionController? session;
 
@@ -225,7 +225,7 @@ class profile extends StatelessWidget {
   Widget _buildProfileOption(
     IconData icon,
     String title,
-    home_controller controller, {
+    HomeController controller, {
     bool isLogout = false,
     VoidCallback? onPress,
   }) {

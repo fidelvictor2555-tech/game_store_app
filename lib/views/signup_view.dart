@@ -7,7 +7,7 @@ class SignupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(signup_controller());
+    final controller = Get.put(SignupController());
 
     return Scaffold(
       appBar: AppBar(title: const Text("Register")),

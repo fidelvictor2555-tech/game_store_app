@@ -13,8 +13,8 @@ var routes = [
   GetPage(name: "/signup", page: () => const SignupView()),
   GetPage(name: "/homescreen", page: () => const HomeScreen()),
   GetPage(name: "/marketplace", page: () => const ShoppingCart()),
-  GetPage(name: "/inventory", page: () => const Inventory()),
+  GetPage(name: "/inventory", page: () => Inventory()),
   GetPage(name: "/product", page: () => const ProductDetail()),
-  GetPage(name: "/checkout", page: () => const CheckoutPage()),
+  GetPage(name: "/checkout", page: () => Checkout()),
   GetPage(name: "/orders", page: () => const OrderHistory()),
 ];

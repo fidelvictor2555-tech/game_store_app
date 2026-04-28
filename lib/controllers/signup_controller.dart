@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class signup_controller extends GetxController {
+class SignupController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -44,7 +44,7 @@ class signup_controller extends GetxController {
 
         if (serverData['success'] == 1) {
           Get.snackbar("success", "you are registered");
-          Get.offAllNamed('/login');
+          Get.offAllNamed('/');
         } else {
           Get.snackbar(
             "registration",
