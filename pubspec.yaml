@@ -8,41 +8,29 @@ version: 1.0.0+1
 environment:
   sdk: ^3.11.0
 
-
 dependencies:
   flutter:
     sdk: flutter
+
   get: ^4.7.3
-  curved_navigation_bar: ^1.0.6
- 
-  cupertino_icons: ^1.0.8
   http: ^1.6.0
   google_nav_bar: ^5.0.7
+  curved_navigation_bar: ^1.0.6
+
+  shared_preferences: ^2.2.3
+  sqflite: ^2.4.2
+  path: ^1.9.1
+
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  get: ^4.6.6
 
   flutter_lints: ^6.0.0
 
-
 flutter:
-
- 
   uses-material-design: true
 
-
   assets:
-     - assets/images/dental_logo.png
-     - assets/images/profile_bg.png
-     - assets/images/fifa26.jpg
-     - assets/images/gamingpc.jpg
-     - assets/images/headset.jpg
-     - assets/images/keyboard.jpg
-     - assets/images/mouse.jpg
-     - assets/images/monitor.jpg
-     - assets/images/ps5.jpg
-     - assets/images/deals.jpg
-  
-
+    - assets/

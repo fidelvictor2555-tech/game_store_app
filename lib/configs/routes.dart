@@ -1,20 +1,10 @@
-import 'package:flutter_application_1/views/shopping_cart.dart';
-import 'package:get/get.dart';
 import 'package:flutter_application_1/views/home_view.dart';
 import 'package:flutter_application_1/views/login_view.dart';
 import 'package:flutter_application_1/views/signup_view.dart';
-import 'package:flutter_application_1/views/inventory.dart';
-import 'package:flutter_application_1/views/product_detail.dart';
-import 'package:flutter_application_1/views/checkout_page.dart';
-import 'package:flutter_application_1/views/order_history.dart';
+import 'package:get/get.dart';
 
 var routes = [
-  GetPage(name: "/", page: () => const LoginView()),
-  GetPage(name: "/signup", page: () => const SignupView()),
-  GetPage(name: "/homescreen", page: () => const HomeScreen()),
-  GetPage(name: "/marketplace", page: () => const ShoppingCart()),
-  GetPage(name: "/inventory", page: () => Inventory()),
-  GetPage(name: "/product", page: () => const ProductDetail()),
-  GetPage(name: "/checkout", page: () => Checkout()),
-  GetPage(name: "/orders", page: () => const OrderHistory()),
+  GetPage(name: '/', page: () => const LoginPage()),
+  GetPage(name: '/signup', page: () => const SignUpView()),
+  GetPage(name: '/homepage', page: () => const HomeView()),
 ];
