@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../controllers/cart_controller.dart';
-import '../models/product_model.dart';
+import '../models/gaming.dart';
 
 class ShoppingCart extends StatefulWidget {
   const ShoppingCart({super.key});
@@ -34,10 +34,6 @@ class _ShoppingCartState extends State<ShoppingCart> {
     final data = jsonDecode(response.body);
 
     if (data["success"] == true) {
-      products = (data["products"] as List)
-          .map((e) => Product.fromJson(e))
-          .toList();
-
       setState(() {
         filteredProducts = products;
         isLoading = false;
@@ -63,7 +59,6 @@ class _ShoppingCartState extends State<ShoppingCart> {
 
       body: Stack(
         children: [
-          // 🔥 BACKGROUND RESTORED
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -103,7 +98,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                             child: Column(
                               children: [
                                 Image.network(
-                                  product.image.trim(),
+                                  product.imagePath,
                                   height: 80,
                                   errorBuilder: (_, __, ___) =>
                                       const Icon(Icons.broken_image),
@@ -112,7 +107,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                 Text("KSh ${product.price}"),
                                 ElevatedButton(
                                   onPressed: () {
-                                    cart.addToCart(product, 1);
+                                    cart.addToCart(
+                                      product as Map<String, dynamic>,
+                                      1,
+                                    );
                                   },
                                   child: const Text("Add"),
                                 ),

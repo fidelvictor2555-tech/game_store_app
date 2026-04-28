@@ -10,4 +10,8 @@ class Product {
     required this.imagePath,
     required this.description,
   });
+
+  static Object? fromJson(e) {
+    return null;
+  }
 }

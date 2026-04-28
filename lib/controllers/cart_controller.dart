@@ -19,7 +19,7 @@ class CartController extends GetxController {
   String get formattedTotal => 'KSh ${totalPrice.toStringAsFixed(0)}';
   int get itemCount => cartItems.length;
 
-  void addToCart(Map<String, dynamic> product) {
+  void addToCart(Map<String, dynamic> product, int i) {
     final index = cartItems.indexWhere((i) => i["id"] == product["id"]);
 
     if (index >= 0) {

@@ -36,7 +36,7 @@ class Inventory extends StatelessWidget {
                     margin: const EdgeInsets.all(10),
                     child: ListTile(
                       leading: Image.network(
-                        item.product.image,
+                        item["imagePath"],
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
@@ -44,14 +44,16 @@ class Inventory extends StatelessWidget {
                             const Icon(Icons.broken_image),
                       ),
 
-                      title: Text(item.product.name),
+                      title: Text(item["productName"]),
 
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("KSh ${item.product.price.toStringAsFixed(2)}"),
+                          Text(
+                            "KSh ${item["productPrice"].toStringAsFixed(2)}",
+                          ),
                           const SizedBox(height: 5),
-                          Text("Qty: ${item.quantity}"),
+                          Text("Qty: ${item["quantity"]}"),
                         ],
                       ),
 
@@ -63,17 +65,21 @@ class Inventory extends StatelessWidget {
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.remove),
-                                onPressed: () => cart.decreaseQuantity(index),
+                                onPressed: () => cart.decreaseQuantity(
+                                  index as Map<String, dynamic>,
+                                ),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.add),
-                                onPressed: () => cart.increaseQuantity(index),
+                                onPressed: () => cart.increaseQuantity(
+                                  index as Map<String, dynamic>,
+                                ),
                               ),
                             ],
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => cart.removeItem(index),
+                            onPressed: () => cart.removeFromCart(item),
                           ),
                         ],
                       ),

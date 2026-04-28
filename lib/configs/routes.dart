@@ -5,6 +5,6 @@ import 'package:get/get.dart';
 
 var routes = [
   GetPage(name: '/', page: () => const LoginPage()),
-  GetPage(name: '/signup', page: () => const SignUpView()),
+  GetPage(name: '/signup', page: () => const SignUpPage()),
   GetPage(name: '/homepage', page: () => const HomeView()),
 ];

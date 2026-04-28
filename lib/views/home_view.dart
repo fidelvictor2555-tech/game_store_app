@@ -23,10 +23,10 @@ class _HomeViewState extends State<HomeView> {
   }
 
   final List<Widget> _pages = [
-    const shopping_cart(),
-    const Inventory(),
+    const ShoppingCart(),
+    Inventory(),
     const OrdersPage(),
-    const profile(),
+    const ProfilePage(),
   ];
 
   @override
