@@ -6,14 +6,14 @@ class SignupController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  var isPassVisible = false.obs;
+  var isPassVisible = true.obs;
   var isLoading = false.obs;
 
   TextEditingController? nameController;
 
   TextEditingController? confirmPasswordController;
 
-  var isConfirmPassVisible;
+  var isConfirmPassVisible = true.obs;
 
   VoidCallback? toggleConfirmPassword;
 

@@ -14,8 +14,8 @@ class SignUpPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.cyan,
         title: const Text(
-          "Create Account",
-          style: TextStyle(color: Color.fromARGB(255, 6, 118, 126)),
+          "",
+          style: TextStyle(color: Color.fromARGB(255, 7, 175, 187)),
         ),
         centerTitle: true,
       ),
@@ -26,7 +26,7 @@ class SignUpPage extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              Image.asset('assets/dental_logo.png', height: 140),
+              Image.asset('assets/images/dental_logo.png', height: 140),
 
               const SizedBox(height: 10),
 
@@ -35,7 +35,7 @@ class SignUpPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontStyle: FontStyle.italic,
-                  color: Color.fromARGB(255, 6, 118, 126),
+                  color: Color.fromARGB(255, 7, 175, 187),
                 ),
               ),
 
@@ -162,7 +162,7 @@ class SignUpPage extends StatelessWidget {
                             }
                           },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 6, 118, 126),
+                      backgroundColor: const Color.fromARGB(255, 7, 175, 187),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),

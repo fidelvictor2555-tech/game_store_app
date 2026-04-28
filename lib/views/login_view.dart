@@ -28,11 +28,11 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
 
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: const Color.fromARGB(255, 7, 175, 187),
         elevation: 0,
         title: const Text(
-          "Great Coffee",
-          style: TextStyle(color: Color.fromARGB(255, 50, 63, 6)),
+          "",
+          style: TextStyle(color: Color.fromARGB(255, 212, 212, 212)),
         ),
         centerTitle: true,
       ),
@@ -43,9 +43,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-
-              // YOUR IMAGE (kept as requested)
-              Image.asset('assets/coflog.jpg', height: 200),
+              Image.asset('assets/images/dental_logo.png', height: 200),
 
               const SizedBox(height: 20),
 
@@ -128,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: BoxDecoration(
                       color: loginController.isLoading.value
                           ? Colors.grey
-                          : Colors.amber,
+                          : const Color.fromARGB(255, 7, 175, 187),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: loginController.isLoading.value
