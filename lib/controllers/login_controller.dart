@@ -1,86 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_application_1/controllers/session_controller.dart';
-import 'package:flutter_application_1/models/user_model.dart';
+import 'package:flutter_application_1/services/database_service.dart';
+import 'package:flutter_application_1/controllers/profile_controller.dart';
 
 class LoginController extends GetxController {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  var isPassVisible = false.obs;
+  var isLoading = false.obs;
 
-  Future<void> login() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+  void togglePassword() => isPassVisible.value = !isPassVisible.value;
+
+  Future<bool> login(String email, String password) async {
+    // VALIDATION
+    if (email.trim().isEmpty || password.trim().isEmpty) {
       Get.snackbar(
-        "Error",
-        "All fields are required",
+        "Missing Fields",
+        "Email and password are required",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: Colors.amber[100],
+        colorText: Colors.brown[800],
       );
-      return;
+      return false;
     }
 
-    try {
-      var url = Uri.parse("http://127.0.0.1/gaming_store_api/login.php");
-
-      var response = await http.post(
-        url,
-        body: {
-          "email": emailController.text.trim(),
-          "password": passwordController.text.trim(),
-        },
+    if (!GetUtils.isEmail(email.trim())) {
+      Get.snackbar(
+        "Invalid Email",
+        "Please enter a valid email",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.amber[100],
+        colorText: Colors.brown[800],
       );
+      return false;
+    }
 
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
+    if (password.length < 6) {
+      Get.snackbar(
+        "Weak Password",
+        "Password must be at least 6 characters",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.amber[100],
+        colorText: Colors.brown[800],
+      );
+      return false;
+    }
 
-        if (data['success'] == 1) {
-          Get.snackbar(
-            "Success",
-            data['message'],
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
+    isLoading.value = true;
 
-          final session = Get.find<SessionController>();
+    final response = await DatabaseService.login(
+      username: email.trim(), // backend still expects "username"
+      password: password.trim(),
+    );
 
-          session.setUser(UserModel(email: emailController.text.trim()));
-          Get.offAllNamed('/homescreen');
-        } else {
-          Get.snackbar(
-            "Login Failed",
-            data['message'],
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      } else {
-        Get.snackbar(
-          "Error",
-          "Server error",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
+    isLoading.value = false;
+
+    if (response["success"] == true) {
+      // SAFE user handling
+      if (response["user"] != null) {
+        Get.find<ProfileController>().setUser(response["user"]);
       }
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Cannot connect to server",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-    }
-  }
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
+      Get.snackbar(
+        "Welcome Back",
+        "Login successful",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green[100],
+        colorText: Colors.green[800],
+      );
+
+      return true;
+    } else {
+      Get.snackbar(
+        "Login Failed",
+        response["message"] ?? "Invalid credentials",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[800],
+      );
+      return false;
+    }
   }
 }

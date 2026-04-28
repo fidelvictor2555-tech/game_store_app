@@ -1,62 +1,93 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_application_1/services/database_service.dart';
 
 class SignupController extends GetxController {
-  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final passwordAgainController = TextEditingController();
 
-  Future<void> register() async {
-    if (nameController.text.isEmpty) {
-      Get.snackbar("error", "please enter full name");
-    } else if (passwordController.text.isEmpty ||
-        passwordAgainController.text.isEmpty ||
-        passwordController.text != passwordAgainController.text) {
+  var isPassVisible = false.obs;
+  var isLoading = false.obs;
+
+  void togglePassword() => isPassVisible.value = !isPassVisible.value;
+
+  Future<bool> signup() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    // VALIDATION
+    if (email.isEmpty || password.isEmpty) {
       Get.snackbar(
-        "error",
-        "please password and password confirmation should be non empty and matching",
+        "Missing Fields",
+        "Email and password are required",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.amber[100],
+        colorText: Colors.brown[800],
       );
-      return;
+      return false;
     }
 
-    try {
-      var url = Uri.parse("http://127.0.0.1/gaming_store_api/signup.php");
-      print("NAME: ${nameController.text}");
-      print("EMAIL: ${emailController.text}");
-      print("PASSWORD: ${passwordController.text}");
-
-      var response = await http.post(
-        url,
-        body: {
-          "name": nameController.text,
-          "email": emailController.text,
-          "password": passwordController.text,
-        },
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar(
+        "Invalid Email",
+        "Please enter a valid email address",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.amber[100],
+        colorText: Colors.brown[800],
       );
-
-      print("RAW RESPONSE: ${response.body}");
-
-      if (response.statusCode == 200) {
-        var serverData = json.decode(response.body);
-
-        if (serverData['success'] == 1) {
-          Get.snackbar("success", "you are registered");
-          Get.offAllNamed('/');
-        } else {
-          Get.snackbar(
-            "registration",
-            serverData['message'] ?? "registration failed",
-          );
-        }
-      } else {
-        Get.snackbar("error", "server error: ${response.statusCode}");
-      }
-    } catch (e) {
-      print(e);
-      Get.snackbar("error", "an error occurred during registration");
+      return false;
     }
+
+    if (password.length < 6) {
+      Get.snackbar(
+        "Weak Password",
+        "Password must be at least 6 characters",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.amber[100],
+        colorText: Colors.brown[800],
+      );
+      return false;
+    }
+
+    isLoading.value = true;
+
+    final response = await DatabaseService.signup(
+      name: "", // backend compatibility if still required
+      email: email,
+      phone: "", // removed from UI but kept for backend compatibility
+      password: password,
+    );
+
+    isLoading.value = false;
+
+    if (response["success"] == true) {
+      emailController.clear();
+      passwordController.clear();
+
+      Get.snackbar(
+        "Account Created",
+        "You can now log in",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green[100],
+        colorText: Colors.green[800],
+      );
+      return true;
+    } else {
+      Get.snackbar(
+        "Sign Up Failed",
+        response["message"] ?? "Something went wrong",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[800],
+      );
+      return false;
+    }
+  }
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.onClose();
   }
 }

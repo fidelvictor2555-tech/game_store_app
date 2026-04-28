@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controllers/cart_controller.dart';
 
 class Inventory extends StatelessWidget {
@@ -10,87 +11,123 @@ class Inventory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Cart"), backgroundColor: Colors.cyan),
+      appBar: AppBar(
+        title: const Text("Your Cart"),
+        backgroundColor: Colors.cyan,
+        foregroundColor: Colors.white,
+      ),
 
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/profile_bg.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+      body: Obx(() {
+        if (cart.cartItems.isEmpty) {
+          return const Center(
+            child: Text("Cart is empty", style: TextStyle(fontSize: 18)),
+          );
+        }
 
-          Obx(() {
-            if (cart.cartItems.isEmpty) {
-              return const Center(child: Text("Cart is empty"));
-            }
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: cart.cartItems.length,
+                itemBuilder: (context, index) {
+                  final item = cart.cartItems[index];
 
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: cart.cartItems.length,
-                    itemBuilder: (context, index) {
-                      final item = cart.cartItems[index];
+                  return Card(
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      leading: Image.network(
+                        item.product.image,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.broken_image),
+                      ),
 
-                      return Card(
-                        child: ListTile(
-                          leading: Image.network(
-                            item.product.image.trim(),
-                            width: 60,
-                            errorBuilder: (_, __, ___) =>
-                                const Icon(Icons.broken_image),
-                          ),
+                      title: Text(item.product.name),
 
-                          title: Text(item.product.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("KSh ${item.product.price.toStringAsFixed(2)}"),
+                          const SizedBox(height: 5),
+                          Text("Qty: ${item.quantity}"),
+                        ],
+                      ),
 
-                          subtitle: Text(
-                            "KSh ${item.product.price} x ${item.quantity}",
-                          ),
-
-                          trailing: Column(
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              IconButton(
-                                icon: const Icon(Icons.add),
-                                onPressed: () => cart.increaseQuantity(index),
-                              ),
                               IconButton(
                                 icon: const Icon(Icons.remove),
                                 onPressed: () => cart.decreaseQuantity(index),
                               ),
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () => cart.increaseQuantity(index),
+                              ),
                             ],
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => cart.removeItem(index),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
 
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Obx(
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Obx(
                     () => Text(
-                      "TOTAL: KSh ${cart.totalPrice.toStringAsFixed(2)}",
+                      "Total: KSh ${cart.totalPrice.toStringAsFixed(2)}",
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ),
 
-                ElevatedButton(
-                  onPressed: () => Get.toNamed("/checkout"),
-                  child: const Text("Checkout"),
-                ),
-              ],
-            );
-          }),
-        ],
-      ),
+                  const SizedBox(height: 10),
+
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      minimumSize: const Size(double.infinity, 45),
+                    ),
+                    onPressed: () {
+                      Get.snackbar(
+                        "Checkout",
+                        "Proceeding to payment...",
+                        backgroundColor: Colors.blue,
+                        colorText: Colors.white,
+                      );
+
+                      Get.toNamed("/checkout");
+                    },
+                    child: const Text("Checkout"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

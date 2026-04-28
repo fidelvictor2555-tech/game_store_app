@@ -63,6 +63,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
 
       body: Stack(
         children: [
+          // 🔥 BACKGROUND RESTORED
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(

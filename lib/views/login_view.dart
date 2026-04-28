@@ -1,32 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_application_1/controllers/login_controller.dart';
+import 'package:get/get.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginViewState extends State<LoginView> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final LoginController controller = Get.find<LoginController>();
-
-  void _handleLogin() {
-
-    controller.emailController.text = _usernameController.text.trim();
-    controller.passwordController.text = _passwordController.text.trim();
-
-    controller.login();
-  }
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -35,130 +27,150 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        elevation: 0,
+        title: const Text(
+          "Great Coffee",
+          style: TextStyle(color: Color.fromARGB(255, 50, 63, 6)),
+        ),
+        centerTitle: true,
+      ),
 
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
-              Image.asset(
-                "assets/images/dental_logo.png",
-                width: 244,
-                height: 207,
-              ),
+              // YOUR IMAGE (kept as requested)
+              Image.asset('assets/coflog.jpg', height: 200),
 
               const SizedBox(height: 20),
 
-              _buildLabel("Enter Username"),
-
-              _buildTextField(
-                hint: "Email",
-                icon: Icons.person,
-                controller: _usernameController,
+              // EMAIL
+              const Row(
+                children: [
+                  Text(
+                    "Email",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
 
-              const SizedBox(height: 20),
-
-              _buildLabel("Enter Password"),
-
-              _buildTextField(
-                hint: "Password",
-                icon: Icons.lock,
-                isPassword: true,
-                controller: _passwordController,
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: "Enter your email",
+                  prefixIcon: const Icon(Icons.email),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-              GestureDetector(
-                onTap: _handleLogin,
+              // PASSWORD
+              const Row(
+                children: [
+                  Text(
+                    "Password",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
 
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-
-                  child: Container(
-                    height: 50,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              Obx(
+                () => TextField(
+                  controller: passwordController,
+                  obscureText: !loginController.isPassVisible.value,
+                  decoration: InputDecoration(
+                    hintText: "Enter password",
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      onPressed: loginController.togglePassword,
+                      icon: Icon(
+                        loginController.isPassVisible.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
+              // LOGIN BUTTON
+              Obx(
+                () => GestureDetector(
+                  onTap: loginController.isLoading.value
+                      ? null
+                      : () async {
+                          final success = await loginController.login(
+                            emailController.text,
+                            passwordController.text,
+                          );
+
+                          if (success) {
+                            Get.offAllNamed('/homepage');
+                          }
+                        },
+                  child: Container(
+                    height: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: loginController.isLoading.value
+                          ? Colors.grey
+                          : Colors.amber,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: loginController.isLoading.value
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          )
+                        : const Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              // SIGNUP LINK
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Don't have an account? "),
-
                   GestureDetector(
-                    onTap: () => Get.toNamed("/signup"),
-
+                    onTap: () => Get.toNamed('/signup'),
                     child: const Text(
-                      "Sign Up",
+                      "Sign up",
                       style: TextStyle(
-                        color: Colors.blueAccent,
+                        color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
+
+              const SizedBox(height: 10),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 0, 20, 5),
-
-      child: Row(
-        children: [
-          Text(
-            text,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required String hint,
-    required IconData icon,
-    required TextEditingController controller,
-    bool isPassword = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
     );
